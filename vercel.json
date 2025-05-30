@@ -1,17 +1,16 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "public",
-  "functions": {
-    "api/health.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "routes": [
+  "builds": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "buildCommand": "mkdir public || true && cp -r *.html *.js js public/ || (mkdir public & copy /Y *.html public\\ & copy /Y *.js public\\ & xcopy /E /I /Y js public\\js\\)",
+        "outputDirectory": "public"
+      }
+    }
+  ],
+  "routes": [
     {
       "src": "/results",
       "dest": "/results.html"
@@ -19,10 +18,6 @@
     {
       "src": "/(.*)",
       "dest": "/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/index.html"
     }
   ],
   "headers": [
