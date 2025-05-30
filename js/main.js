@@ -1,9 +1,19 @@
-// Configuration
-const GEMINI_API_KEY = "AIzaSyCk814Ok0MOa_C9_u2FiJx5WX_spaHoeUQ"; // Replace with your actual API key
-const GEMINI_API_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-05-06:generateContent";
-const GEMINI_API_URL_FALLBACK =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-05-06:generateContent";
+// Configuration - Nutze APP_CONFIG statt hardcodierte Werte
+function getConfig() {
+  if (typeof window.APP_CONFIG !== "undefined") {
+    return window.APP_CONFIG;
+  }
+
+  // Fallback für alte Konfiguration
+  return {
+    GEMINI_API_KEY: "AIzaSyCk814Ok0MOa_C9_u2FiJx5WX_spaHoeUQ",
+    GEMINI_API_URL:
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-05-06:generateContent",
+    GEMINI_API_URL_FALLBACK:
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-05-06:generateContent",
+    DEMO_MODE: false,
+  };
+}
 
 // DOM Elements
 const projectForm = document.getElementById("projectForm");
@@ -17,6 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function initializeApp() {
+  const config = getConfig();
+
   // Add form event listener
   if (projectForm) {
     projectForm.addEventListener("submit", handleFormSubmit);
@@ -28,20 +40,45 @@ function initializeApp() {
   if (projectIdea) {
     projectInput.value = decodeURIComponent(projectIdea);
   }
+
+  // Show demo mode warning if no API key
+  if (config.DEMO_MODE) {
+    console.warn("🔄 Demo-Modus aktiviert - API Key nicht konfiguriert");
+  } else {
+    console.log("✅ API Key konfiguriert - AI Features verfügbar");
+  }
 }
 
 async function handleFormSubmit(e) {
   e.preventDefault();
 
+  const config = getConfig();
   const projectIdea = projectInput.value.trim();
+
   if (!projectIdea) {
-    showError("Please enter a project description.");
+    showError("Bitte gib eine Projektbeschreibung ein.");
     return;
   }
 
-  if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
-    showError("Please configure your Gemini API key in js/main.js");
-    return;
+  // Check API key configuration
+  if (
+    !config.GEMINI_API_KEY ||
+    config.GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" ||
+    config.DEMO_MODE
+  ) {
+    console.log("🔄 Verwende Demo-Daten da kein API Key konfiguriert ist");
+
+    // Load demo data and redirect to results
+    if (typeof loadDemoData === "function") {
+      loadDemoData();
+      window.location.href = "results.html";
+      return;
+    } else {
+      showError(
+        "Demo-Daten nicht verfügbar. Bitte konfiguriere deinen Gemini API Key in config.js"
+      );
+      return;
+    }
   }
 
   showLoading(true);
@@ -63,22 +100,39 @@ async function handleFormSubmit(e) {
     window.location.href = "results.html";
   } catch (error) {
     console.error("Error generating visualizations:", error);
-    showError(`Failed to generate visualizations: ${error.message}`);
-    showLoading(false);
+
+    // Try demo data as fallback
+    if (typeof loadDemoData === "function") {
+      console.log("🔄 API Fehler - verwende Demo-Daten als Fallback");
+      loadDemoData();
+      window.location.href = "results.html";
+    } else {
+      showError(`Fehler bei der Visualisierung: ${error.message}`);
+      showLoading(false);
+    }
   }
 }
 
 async function generateVisualizationsWithGemini(projectIdea) {
+  const config = getConfig();
   const prompt = createGeminiPrompt(projectIdea);
 
   // Try the primary API endpoint first
   try {
-    return await makeGeminiRequest(GEMINI_API_URL, prompt);
+    return await makeGeminiRequest(
+      config.GEMINI_API_URL,
+      prompt,
+      config.GEMINI_API_KEY
+    );
   } catch (error) {
     console.warn("Primary API failed, trying fallback:", error.message);
     // Try the fallback endpoint
     try {
-      return await makeGeminiRequest(GEMINI_API_URL_FALLBACK, prompt);
+      return await makeGeminiRequest(
+        config.GEMINI_API_URL_FALLBACK,
+        prompt,
+        config.GEMINI_API_KEY
+      );
     } catch (fallbackError) {
       console.error("Both API endpoints failed:", fallbackError.message);
       throw fallbackError;
@@ -86,10 +140,10 @@ async function generateVisualizationsWithGemini(projectIdea) {
   }
 }
 
-async function makeGeminiRequest(apiUrl, prompt) {
+async function makeGeminiRequest(apiUrl, prompt, apiKey) {
   console.log(
     "Making API request to:",
-    `${apiUrl}?key=${GEMINI_API_KEY.substring(0, 8)}...`
+    `${apiUrl}?key=${apiKey.substring(0, 8)}...`
   );
 
   const requestBody = {
@@ -111,14 +165,22 @@ async function makeGeminiRequest(apiUrl, prompt) {
   };
 
   try {
-    const response = await fetch(`${apiUrl}?key=${GEMINI_API_KEY}`, {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      getConfig().TIMEOUT || 30000
+    );
+
+    const response = await fetch(`${apiUrl}?key=${apiKey}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(requestBody),
+      signal: controller.signal,
     });
 
+    clearTimeout(timeoutId);
     console.log("Response status:", response.status);
 
     if (!response.ok) {
@@ -172,6 +234,9 @@ async function makeGeminiRequest(apiUrl, prompt) {
     }
   } catch (networkError) {
     console.error("Network error:", networkError);
+    if (networkError.name === "AbortError") {
+      throw new Error("Request timeout - please try again.");
+    }
     if (networkError.message.includes("Failed to fetch")) {
       throw new Error(
         "Network error: Please check your internet connection and ensure CORS is properly configured."
