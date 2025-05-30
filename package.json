@@ -8,7 +8,7 @@
     "dev": "node server.js",
     "build": "echo 'Using existing public directory - no build needed'",
     "serve": "http-server . -p 8080 -c-1",
-    "vercel-build": "echo 'Static files ready in public directory'"
+    "vercel-build": "echo 'Static files are in the public directory, no build step required by npm.'"
   },
   "dependencies": {
     "express": "^4.18.2",
