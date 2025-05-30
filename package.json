@@ -6,8 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "build": "echo 'No build needed - static files'",
-    "serve": "http-server . -p 8080 -c-1"
+    "build": "mkdir public 2>nul & copy /Y *.html public\\ & copy /Y *.js public\\ & xcopy /E /I /Y js public\\js\\ & echo Build completed",
+    "serve": "http-server . -p 8080 -c-1",
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "express": "^4.18.2",

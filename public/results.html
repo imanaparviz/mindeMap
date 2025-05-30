@@ -1,0 +1,301 @@
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Space+Grotesk%3Awght%40400%3B500%3B700"
+    />
+
+    <title>AI Project Visualizer - Results</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- GoJS for Mindmaps -->
+    <script src="https://unpkg.com/gojs@2.3.15/release/go.js"></script>
+    <!-- Mermaid.js for ERD and User Flow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+  </head>
+  <body>
+    <div
+      class="relative flex size-full min-h-screen flex-col bg-[#111817] dark group/design-root overflow-x-hidden"
+      style="font-family: 'Space Grotesk', 'Noto Sans', sans-serif"
+    >
+      <div class="layout-container flex h-full grow flex-col">
+        <header
+          class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#283937] px-10 py-3"
+        >
+          <div class="flex items-center gap-4 text-white">
+            <div class="size-4">
+              <svg
+                viewBox="0 0 48 48"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+            </div>
+            <h2
+              class="text-white text-lg font-bold leading-tight tracking-[-0.015em]"
+            >
+              AI Project Visualizer
+            </h2>
+          </div>
+          <div class="flex flex-1 justify-end gap-8">
+            <div class="flex items-center gap-9">
+              <a
+                class="text-white text-sm font-medium leading-normal"
+                href="index.html"
+                >Home</a
+              >
+              <a
+                class="text-white text-sm font-medium leading-normal"
+                href="#"
+                onclick="generateNewProject()"
+                >New Project</a
+              >
+            </div>
+            <button
+              onclick="exportAll()"
+              class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#0cf2d0] text-[#111817] text-sm font-bold leading-normal tracking-[0.015em]"
+            >
+              <span class="truncate">Export All</span>
+            </button>
+            <div
+              class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDXZpeO6awY-9MAyqXu0xylzhz-PptDC8_rliCRE1CwR7DMKNCzavPd4WO7eH4rRobaldTQtSgzP7RRaiG1RUBzMUI7yfrVzQFVuhUOwQQjInnxjAzWvkW6fIw47HMcgyNI7eptLDXXnlesMqY5_PNSaXcTL8YqYJ6QYNp9I0HcsZXvSrvMgFgoqZXdYxhj_vUP7fUNSxn05PSb5kGJtAh7vqWkEUxH-VD7IY-IoVUBbofUyTFrGjno1FYWTXy-W8UWp-uyfkon2TA');
+              "
+            ></div>
+          </div>
+        </header>
+        <div class="px-40 flex flex-1 justify-center py-5">
+          <div
+            class="layout-content-container flex flex-col max-w-[960px] flex-1"
+          >
+            <div class="flex flex-wrap justify-between gap-3 p-4">
+              <div class="flex min-w-72 flex-col gap-3">
+                <p
+                  class="text-white tracking-light text-[32px] font-bold leading-tight"
+                >
+                  Project Visualizations
+                </p>
+                <p
+                  id="projectDescription"
+                  class="text-[#9cbab5] text-sm font-normal leading-normal"
+                >
+                  <!-- Project description will be inserted here -->
+                </p>
+              </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="pb-3">
+              <div class="flex border-b border-[#3b5450] px-4 gap-8">
+                <a
+                  class="tab-link flex flex-col items-center justify-center border-b-[3px] border-b-white text-white pb-[13px] pt-4"
+                  href="#roadmap"
+                  data-tab="roadmap"
+                >
+                  <p
+                    class="text-white text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    Roadmap
+                  </p>
+                </a>
+                <a
+                  class="tab-link flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#9cbab5] pb-[13px] pt-4"
+                  href="#mindmap"
+                  data-tab="mindmap"
+                >
+                  <p
+                    class="text-[#9cbab5] text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    Mindmap
+                  </p>
+                </a>
+                <a
+                  class="tab-link flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#9cbab5] pb-[13px] pt-4"
+                  href="#erd"
+                  data-tab="erd"
+                >
+                  <p
+                    class="text-[#9cbab5] text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    ERD
+                  </p>
+                </a>
+                <a
+                  class="tab-link flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#9cbab5] pb-[13px] pt-4"
+                  href="#tasks"
+                  data-tab="tasks"
+                >
+                  <p
+                    class="text-[#9cbab5] text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    Tasks
+                  </p>
+                </a>
+                <a
+                  class="tab-link flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#9cbab5] pb-[13px] pt-4"
+                  href="#userflow"
+                  data-tab="userflow"
+                >
+                  <p
+                    class="text-[#9cbab5] text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    User Flow
+                  </p>
+                </a>
+              </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+              <!-- Roadmap Tab -->
+              <div id="roadmap" class="tab-pane active">
+                <h2
+                  class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5"
+                >
+                  Roadmap
+                </h2>
+                <div id="roadmapContent" class="p-4">
+                  <div
+                    class="bg-[#1b2725] border border-[#3b5450] rounded-xl p-6"
+                  >
+                    <div class="animate-pulse">
+                      <div class="h-4 bg-[#3b5450] rounded w-3/4 mb-4"></div>
+                      <div class="h-4 bg-[#3b5450] rounded w-1/2 mb-4"></div>
+                      <div class="h-4 bg-[#3b5450] rounded w-2/3"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mindmap Tab -->
+              <div id="mindmap" class="tab-pane hidden">
+                <h2
+                  class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5"
+                >
+                  Mindmap
+                </h2>
+                <div class="p-4">
+                  <div
+                    id="mindmapDiv"
+                    class="bg-[#1b2725] border border-[#3b5450] rounded-xl"
+                    style="height: 500px"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- ERD Tab -->
+              <div id="erd" class="tab-pane hidden">
+                <h2
+                  class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5"
+                >
+                  Entity Relationship Diagram
+                </h2>
+                <div class="p-4">
+                  <div
+                    id="erdContent"
+                    class="bg-[#1b2725] border border-[#3b5450] rounded-xl p-6 overflow-auto"
+                  >
+                    <!-- ERD will be rendered here -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tasks Tab -->
+              <div id="tasks" class="tab-pane hidden">
+                <h2
+                  class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5"
+                >
+                  Task List
+                </h2>
+                <div id="tasksContent" class="p-4">
+                  <!-- Tasks will be rendered here -->
+                </div>
+              </div>
+
+              <!-- User Flow Tab -->
+              <div id="userflow" class="tab-pane hidden">
+                <h2
+                  class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5"
+                >
+                  User Flow
+                </h2>
+                <div class="p-4">
+                  <div
+                    id="userflowContent"
+                    class="bg-[#1b2725] border border-[#3b5450] rounded-xl p-6 overflow-auto"
+                  >
+                    <!-- User Flow will be rendered here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-stretch">
+              <div class="flex flex-1 gap-3 flex-wrap px-4 py-3 justify-start">
+                <button
+                  onclick="exportCurrentTab()"
+                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#283937] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#3b5450] transition-colors"
+                >
+                  <span class="truncate">Export Current</span>
+                </button>
+                <button
+                  onclick="copyToClipboard()"
+                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#283937] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#3b5450] transition-colors"
+                >
+                  <span class="truncate">Copy</span>
+                </button>
+                <button
+                  onclick="regenerateCurrentTab()"
+                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#0cf2d0] text-[#111817] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-all"
+                >
+                  <span class="truncate">Regenerate</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="flex justify-center">
+          <div class="flex max-w-[960px] flex-1 flex-col">
+            <footer
+              class="flex flex-col gap-6 px-5 py-10 text-center @container"
+            >
+              <div
+                class="flex flex-wrap items-center justify-center gap-6 @[480px]:flex-row @[480px]:justify-around"
+              >
+                <a
+                  class="text-[#9cbab5] text-base font-normal leading-normal min-w-40"
+                  href="#"
+                  >Terms of Service</a
+                >
+                <a
+                  class="text-[#9cbab5] text-base font-normal leading-normal min-w-40"
+                  href="#"
+                  >Privacy Policy</a
+                >
+              </div>
+              <p class="text-[#9cbab5] text-base font-normal leading-normal">
+                @2024 AI Project Visualizer. All rights reserved.
+              </p>
+            </footer>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="js/demo-data.js"></script>
+    <script src="js/results.js"></script>
+  </body>
+</html>
