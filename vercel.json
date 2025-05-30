@@ -6,6 +6,12 @@
       "use": "@vercel/static"
     }
   ],
+  "routes": [
+    { "src": "/results", "dest": "/results.html" },
+    { "src": "/", "dest": "/index.html" },
+    { "src": "/(?<file>.+.js)", "dest": "/js/$file" },
+    { "src": "/(?<file>.+.css)", "dest": "/css/$file" }
+  ],
   "cleanUrls": true,
   "headers": [
     {
