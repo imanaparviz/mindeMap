@@ -16,7 +16,6 @@ window.APP_CONFIG = {
   NODE_ENV: "production",
   APP_NAME: "AI Project Visualizer",
   VERSION: "1.0.0",
-
   // API Settings
   MAX_RETRIES: 3,
   TIMEOUT: 30000,
