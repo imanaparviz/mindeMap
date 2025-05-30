@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "build": "mkdir public 2>nul & copy /Y *.html public\\ & copy /Y *.js public\\ & xcopy /E /I /Y js public\\js\\ & echo Build completed",
+    "build": "echo 'Using existing public directory - no build needed'",
     "serve": "http-server . -p 8080 -c-1",
-    "vercel-build": "npm run build"
+    "vercel-build": "echo 'Static files ready in public directory'"
   },
   "dependencies": {
     "express": "^4.18.2",

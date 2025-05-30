@@ -1,15 +1,7 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "buildCommand": "mkdir public || true && cp -r *.html *.js js public/ || (mkdir public & copy /Y *.html public\\ & copy /Y *.js public\\ & xcopy /E /I /Y js public\\js\\)",
-        "outputDirectory": "public"
-      }
-    }
-  ],
+  "cleanUrls": true,
+  "outputDirectory": "public",
   "routes": [
     {
       "src": "/results",
